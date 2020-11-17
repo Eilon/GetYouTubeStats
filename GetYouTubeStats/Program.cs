@@ -67,7 +67,7 @@ namespace GetYouTubeStats
             {
                 Console.WriteLine(
                     string.Join(',',
-                        new[] { item.ID, item.Title, item.Likes.ToString(CultureInfo.InvariantCulture), item.Dislikes.ToString(CultureInfo.InvariantCulture), item.Views.ToString(CultureInfo.InvariantCulture), item.Comments.ToString(CultureInfo.InvariantCulture) }
+                        new[] { $"https://www.youtube.com/watch?v={item.ID}", item.Title, item.Likes.ToString(CultureInfo.InvariantCulture), item.Dislikes.ToString(CultureInfo.InvariantCulture), item.Views.ToString(CultureInfo.InvariantCulture), item.Comments.ToString(CultureInfo.InvariantCulture) }
                         .Select(s => $"\"{s}\"")));
             }
 

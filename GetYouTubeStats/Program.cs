@@ -14,7 +14,9 @@ namespace GetYouTubeStats
         // How to get YouTube API key: https://developers.google.com/youtube/v3/getting-started
 
         const string UserSecretName = "YOUTUBE_TOKEN";
-        private static string PlaylistId => "PLdo4fOcmZ0oVWop1HEOml2OdqbDs6IlcI";
+        private static string PlaylistId =>
+            //"PLdo4fOcmZ0oVWop1HEOml2OdqbDs6IlcI"; // .NET Conf 2020 playlist
+            "PLdo4fOcmZ0oULyHSPBx-tQzePOYlhvrAU"; // .NET Conf 2023 playlist
 
         static async Task<int> Main(string[] args)
         {
@@ -62,12 +64,19 @@ namespace GetYouTubeStats
                 videoDetails.Add(v);
             }
 
-            Console.WriteLine("ID,Title,Likes,Dislikes,Views,Comments");
+            Console.WriteLine("ID,Title,Likes,Views,Comments,PublishedDate");
             foreach (var item in videoDetails)
             {
                 Console.WriteLine(
                     string.Join(',',
-                        new[] { $"https://www.youtube.com/watch?v={item.ID}", item.Title, item.Likes.ToString(CultureInfo.InvariantCulture), item.Dislikes.ToString(CultureInfo.InvariantCulture), item.Views.ToString(CultureInfo.InvariantCulture), item.Comments.ToString(CultureInfo.InvariantCulture) }
+                        new[] {
+                            $"https://www.youtube.com/watch?v={item.ID}",
+                            item.Title,
+                            item.Likes.ToString(CultureInfo.InvariantCulture),
+                            item.Views.ToString(CultureInfo.InvariantCulture),
+                            item.Comments.ToString(CultureInfo.InvariantCulture),
+                            item.PublishedDate.ToString(CultureInfo.InvariantCulture),
+                        }
                         .Select(s => $"\"{s}\"")));
             }
 
@@ -81,9 +90,9 @@ namespace GetYouTubeStats
             public string Title { get; set; }
             public string ID { get; set; }
             public int Likes { get; set; }
-            public int Dislikes { get; set; }
             public int Views { get; set; }
             public int Comments { get; set; }
+            public DateTime PublishedDate { get; set; }
         }
 
         private static async Task<VideoDetail> GetVideoDetails(HttpClient http, string youTubeToken, string id)
@@ -102,9 +111,9 @@ namespace GetYouTubeStats
                 ID = z.items[0].id,
                 Title = z.items[0].snippet.title,
                 Likes = int.Parse(z.items[0].statistics.likeCount, CultureInfo.InvariantCulture),
-                Dislikes = int.Parse(z.items[0].statistics.dislikeCount, CultureInfo.InvariantCulture),
                 Views = int.Parse(z.items[0].statistics.viewCount, CultureInfo.InvariantCulture),
                 Comments = int.Parse(z.items[0].statistics.commentCount, CultureInfo.InvariantCulture),
+                PublishedDate = z.items[0].snippet.publishedAt,
             };
         }
 
@@ -221,7 +230,6 @@ namespace GetYouTubeStats
         {
             public string viewCount { get; set; }
             public string likeCount { get; set; }
-            public string dislikeCount { get; set; }
             public string favoriteCount { get; set; }
             public string commentCount { get; set; }
         }
